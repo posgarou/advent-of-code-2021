@@ -1,6 +1,6 @@
 use std::fs::read_to_string;
 
-use day07::CrabSwarm;
+use day07::{CrabSwarm, MovementCostStrategy};
 
 fn main() {
     let input: Vec<i32> = read_to_string("data/input.txt")
@@ -9,5 +9,12 @@ fn main() {
 
     let swarm = CrabSwarm::from(&input);
 
-    println!("Lowest cost position: {:?}", swarm.get_best_alignment());
+    println!(
+        "Lowest cost position (fixed cost): {:?}",
+        swarm.get_best_alignment(&MovementCostStrategy::Fixed)
+    );
+    println!(
+        "Lowest cost position (linear cost): {:?}",
+        swarm.get_best_alignment(&MovementCostStrategy::Linear)
+    );
 }
