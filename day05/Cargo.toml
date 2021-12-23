@@ -1,0 +1,11 @@
+[package]
+name = "day05"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "day05"
+path = "src/lib.rs"
+
+[dependencies]
+regex = "1"
