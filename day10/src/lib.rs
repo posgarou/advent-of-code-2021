@@ -1,22 +1,23 @@
-pub struct CorruptedDelimiter(pub char);
+pub enum ParseResult {
+    Ok,
+    Corrupted(char),
+}
 
 pub fn sum_corrupted_points(lines: Vec<&str>) -> i32 {
     lines
         .into_iter()
-        .filter_map(is_corrupted)
-        .map(
-            |CorruptedDelimiter(delimiter)| match delimiter.to_string().as_str() {
-                ")" => 3,
-                "]" => 57,
-                "}" => 1197,
-                ">" => 25137,
-                _ => 0,
-            },
-        )
+        .map(parse_line)
+        .map(|result| match result {
+            ParseResult::Corrupted(')') => 3,
+            ParseResult::Corrupted(']') => 57,
+            ParseResult::Corrupted('}') => 1197,
+            ParseResult::Corrupted('>') => 25137,
+            _ => 0,
+        })
         .sum()
 }
 
-pub fn is_corrupted(input: &str) -> Option<CorruptedDelimiter> {
+fn parse_line(input: &str) -> ParseResult {
     let mut open_chunks = vec![];
 
     for character in input.chars() {
@@ -30,15 +31,15 @@ pub fn is_corrupted(input: &str) -> Option<CorruptedDelimiter> {
                     if is_closing_delimiter_for(*delimiter, character) {
                         open_chunks.pop();
                     } else {
-                        return Some(CorruptedDelimiter(character));
+                        return ParseResult::Corrupted(character);
                     }
                 }
-                None => return Some(CorruptedDelimiter(character)),
+                None => return ParseResult::Corrupted(character),
             }
         }
     }
 
-    None
+    ParseResult::Ok
 }
 
 fn is_opening_delimiter(input: char) -> bool {
@@ -75,26 +76,7 @@ fn is_closing_delimiter(input: char) -> bool {
 
 #[cfg(test)]
 mod test {
-    use crate::{is_corrupted, sum_corrupted_points};
-
-    #[test]
-    fn it_recognizes_corrupted_lines() {
-        assert_eq!(
-            is_corrupted("{([(<{}[<>[]}>{[]{[(<()>")
-                .unwrap()
-                .0
-                .to_string(),
-            "}"
-        );
-
-        assert_eq!(
-            is_corrupted("<{([([[(<>()){}]>(<<{{")
-                .unwrap()
-                .0
-                .to_string(),
-            ">"
-        )
-    }
+    use crate::sum_corrupted_points;
 
     #[test]
     fn it_sums_corrupted_points() {
