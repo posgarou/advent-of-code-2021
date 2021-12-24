@@ -21,4 +21,9 @@ fn main() {
         "Risk total for low points: {:?}",
         map.get_low_point_risk_total()
     );
+
+    println!(
+        "Largest three basin product: {:?}",
+        map.get_three_largest_basin_product()
+    );
 }
